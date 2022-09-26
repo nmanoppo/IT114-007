@@ -17,8 +17,13 @@ public class Problem1 {
     static void processArray(int[] arr){
         System.out.println("Processing Array:" + Arrays.toString(arr));
         System.out.println("Odds output:");
-        //TODO add/edit code here
+        System.out.println(Arrays.toString(arr));
         
+        for(int i=0; i<arr.length; i++) {
+            if(arr[i] % 2 != 0)
+            System.out.println(arr[i]);
+        }
+
         //end add/edit section
         System.out.println();
         System.out.println("End process");

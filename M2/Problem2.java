@@ -18,8 +18,13 @@ public class Problem2 {
         System.out.println("Processing Array:" + Arrays.toString(arr));
         double total = 0;
         String totalOutput = "";
-        //TODO add/edit code here
+
+        for (int i=0; i<arr.length; i++) {
+            total += arr[i];
+        }
        
+        total = Math.round(total *100.0)/100.0;
+
         //set the double to a string variable
         totalOutput = total+"";
         //end add/edit section
