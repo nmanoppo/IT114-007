@@ -1,10 +1,10 @@
-public class NumberGuesser4 {
-    import java.io.File;
-    import java.io.FileNotFoundException;
-    import java.io.FileWriter;
-    import java.io.IOException;
-    import java.util.Random;
-    import java.util.Scanner;
+package M3;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.Random;
+import java.util.Scanner;
 
 public class NumberGuesser4 {
     private int maxLevel = 1;
@@ -16,6 +16,7 @@ public class NumberGuesser4 {
     private Random random = new Random();
     private String fileName = "ng4.txt";
     private String[] fileHeaders = {"Level", "Strikes", "Number", "MaxLevel"};//used for demo readability
+    
 
     private void saveState(){
         String[] data = {level+"", strikes+"", number +"", maxLevel+""};
@@ -123,15 +124,24 @@ public class NumberGuesser4 {
         if (guess == number) {
             win();
             pickNewRandom = true;
-        } else {
-            System.out.println("That's wrong");
-            strikes++;
-            if (strikes >= maxStrikes) {
-                lose();
-                pickNewRandom = true;
-            }
+        } else if (guess < number) {
+            System.out.print("Guess Higher --"); // Implementation 1: Gives the user a hint to guess higher
+        }
+        else {
+            System.out.print("Guess Lower -- "); // Implementation 1: Gives the user a hint to guess lower
+        }
+
+        if (Math.abs(number - guess) <=5) {
+            System.out.println("You're getting Hotter"); // Implementation 4: Display a cold, warm, hot indicator based on how close to the correct value the guess
+        }
+        else if (Math.abs(number - guess) <= 10) {
+            System.out.println("You're getting Warmer"); // Implementation 4: Display a cold, warm, hot indicator based on how close to the correct value the guess
+        }
+        else {
+            System.out.println("You're getting Colder"); // Implementation 4: Display a cold, warm, hot indicator based on how close to the correct value the guess
         }
     }
+
 
     private int strToNum(String message) {
         int guess = -1;
@@ -184,4 +194,3 @@ public class NumberGuesser4 {
         ng.start();
     }
 }    
-}
