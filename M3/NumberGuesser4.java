@@ -125,20 +125,20 @@ public class NumberGuesser4 {
             win();
             pickNewRandom = true;
         } else if (guess < number) {
-            System.out.print("Guess Higher --"); // (nm94, 10/05) Implementation 1: Gives the user a hint to guess higher
+            System.out.print("Guess Higher --"); // (nm94, 10/05) Implementation #1: Gives the user a hint to guess higher
         }
         else {
-            System.out.print("Guess Lower -- "); // (nm94, 10/05) Implementation 1: Gives the user a hint to guess lower
+            System.out.print("Guess Lower -- "); // (nm94, 10/05) Implementation #1: Gives the user a hint to guess lower
         }
 
         if (Math.abs(number - guess) <=5) {
-            System.out.println("You're getting Hotter"); // (nm94, 10/05) Implementation 4: Display a cold, warm, hot indicator based on how close to the correct value the guess
+            System.out.println("You're getting Hotter"); // (nm94, 10/05) Implementation #4: Display a cold, warm, hot indicator based on how close to the correct value the guess
         }
         else if (Math.abs(number - guess) <= 10) {
-            System.out.println("You're getting Warmer"); // (nm94, 10/05) Implementation 4: Display a cold, warm, hot indicator based on how close to the correct value the guess
+            System.out.println("You're getting Warmer"); // (nm94, 10/05) Implementation #4: Display a cold, warm, hot indicator based on how close to the correct value the guess
         }
         else {
-            System.out.println("You're getting Colder"); // (nm94, 10/05) Implementation 4: Display a cold, warm, hot indicator based on how close to the correct value the guess
+            System.out.println("You're getting Colder"); // (nm94, 10/05) Implementation #4: Display a cold, warm, hot indicator based on how close to the correct value the guess
         }
     }
 
