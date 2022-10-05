@@ -1,2 +1,0 @@
-Level,Strikes,Number,MaxLevel
-9,0,14,1
