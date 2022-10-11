@@ -67,6 +67,11 @@ public class Server {
         }
     }
 
+    /**
+     * @param message
+     * @param clientId
+     * @return
+     */
     private boolean processCommand(String message, long clientId){
         System.out.println("Checking command: " + message);
         if(message.equalsIgnoreCase("disconnect")){
