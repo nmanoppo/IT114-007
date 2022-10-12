@@ -6,6 +6,8 @@ import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Random;
+import java.util.Scanner;
 
 public class Server {
     int port = 3001;
@@ -66,13 +68,13 @@ public class Server {
             }
         }
     }
-
+    
     /**
      * @param message
      * @param clientId
      * @return
      */
-    private boolean processCommand(String message, long clientId){
+    private boolean processCommand(String message, long clientId) {
         System.out.println("Checking command: " + message);
         if(message.equalsIgnoreCase("disconnect")){
             Iterator<ServerThread> it = clients.iterator();
@@ -81,14 +83,50 @@ public class Server {
                 if(client.getId() == clientId){
                     it.remove();
                     disconnect(client);
-                    
                     break;
                 }
             }
             return true;
         }
+        else if (message.equalsIgnoreCase("Coin Flip")) { //NADIA, NM94, Oct 12th 2022; Coin flip implementation, which returns HEADS or TAILS to all connected clients
+            Random random = new Random();
+            String sideUp;
+            int sideup = random.nextInt(2);
+                if (sideup == 0) {
+                    broadcast("HEADS", clientId);
+                }
+                else {
+                    broadcast("TAILS", clientId);
+                }
+            }
+        else if (message.equalsIgnoreCase("Guess a number")) { //NADIA, NM94, Oct 12th 2022; Number guesser implementation, which generates a random number for the clients to guess
+            Random rand = new Random();
+            int randomNum = rand.nextInt(10);
+            int userGuess;
+            boolean correct = false;
+
+            Scanner guess = new Scanner(System.in);
+            System.out.println("I've chosen a number from 1-10, can you guess it?");
+
+            while (!correct) {
+                userGuess = guess.nextInt();
+
+                if (userGuess == randomNum) {
+                    correct = true;
+                    broadcast("You guessed correctly!", clientId);
+                }
+                else if (userGuess < randomNum) {
+                    broadcast("Guess Higher", clientId);
+                }
+                else if (userGuess > randomNum) {
+                    broadcast("Guess Lower", clientId);
+                }
+
+            } 
+        }
         return false;
     }
+    
     public static void main(String[] args) {
         System.out.println("Starting Server");
         Server server = new Server();
