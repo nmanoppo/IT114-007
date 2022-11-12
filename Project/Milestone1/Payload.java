@@ -1,4 +1,4 @@
-package Project;
+package Project.Milestone1;
 
 import java.io.Serializable;
 public class Payload implements Serializable {
