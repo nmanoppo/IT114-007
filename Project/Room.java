@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import java.util.*;
+
 public class Room implements AutoCloseable{
 	protected static Server server;// used to refer to accessible server functions
 	private String name;
@@ -16,6 +18,9 @@ public class Room implements AutoCloseable{
 	private final static String DISCONNECT = "disconnect";
 	private final static String LOGOUT = "logout";
 	private final static String LOGOFF = "logoff";
+	private final static String FLIP = "flip";
+	private final static String ROLL = "roll";
+
 
 	public Room(String name) {
 		this.name = name;
@@ -109,6 +114,14 @@ public class Room implements AutoCloseable{
 						roomName = comm2[1];
 						Room.joinRoom(roomName, client);
 						break;
+					case FLIP:
+						String coinFlip = Room.flip();
+						sendMessage(client, coinFlip);
+						break;
+					case ROLL:
+						String number = Room.roll();
+						sendMessage(client, number);
+						break;
 					case DISCONNECT:
 					case LOGOUT:
 					case LOGOFF:
@@ -119,6 +132,44 @@ public class Room implements AutoCloseable{
 						break;
 				}
 
+			} else {
+				//bold (#)
+				//I used regex to read through a message user sends and determine if it contains the indicators of bold and/or italics, underline, or color. If true it will enter the if statement, and it will split
+				//the text by the indicator [bold(#), italics(_), bold & italics (**_ _**), underline (~), color (#r)], and if the sentence has matching tags at the beginning and end, it will replace the tags with html characters
+				// such as [<b></b> for bold, <i></i> for italics, <b><i></i></b> for bold & italics, <u></u> for underline, <color></color>] and it will send the revised text back to the client. However, if it does not have
+				//matching opening and closing tags, it will first split by the first tag and put it into a list containing two strings. then I will get the string at index 1 (should be text after the first tag)
+				//Then i will split it again by the closing tag, and then I will take the index of 0 (should be the text before the closing tag), and then append the html characters to the desired text.
+				if (message.matches("(.*)#(.+)#(.*)")) {
+					String[] plainText = message.split("#");
+					String text = "<b>" + plainText[1] + "</b>";
+					sendMessage(client, text);
+				}
+				//italics (_)
+				if (message.matches("(.*)_(.+)_(.*)")) {
+				String[] plainText = message.split("_");
+				String text = "<i>" + plainText[1] + "</i>";
+				sendMessage(client, text);
+				}
+				//bold & italics (**_ _**)
+				if (message.matches("(.*)**_(.+)_**(.*)")) {
+					String[] plainText = message.split("**_");
+					String[] newText = plainText[1].split("_**");
+					String text = "<b><i>" + newText[0] + "</i></b>";
+					sendMessage(client, text);
+				}
+				//underline (~)
+				if (message.matches("(.*)~(.+)~(.*)")) {
+					String[] plainText = message.split("~");
+					String text = "<u>" + plainText[1] + "<u>";
+					sendMessage(client, text);
+				}
+				//color (#r)
+				if (message.matches("(.*)#r(.+)#r(.*)")) {
+					String[] plainText = message.split("#r");
+					String[] newText = plainText[1].split("r#");
+					String text = "<color>" + newText[1] + "</color>";
+					sendMessage(client, text);
+				}
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -140,6 +191,28 @@ public class Room implements AutoCloseable{
 		if (!server.joinRoom(roomName, client)) {
 			client.sendMessage("Server", String.format("Room %s doesn't exist", roomName));
 		}
+	}
+
+	public static String flip() {
+		Random rand = new Random();
+		String sideUp;
+		int sideup = rand.nextInt(2);
+		if (sideup == 0) {
+			sideUp = "heads";
+		} else {
+			sideUp = "tails";
+		}
+		return sideUp;
+	}
+
+	public static String roll() {
+		Random rand = new Random();
+		int random = rand.nextInt(10) + 1;
+		for (int i = 0; i < 10; i++) {
+			System.out.println(random);
+		}
+		String number = " " + random;
+		return number;
 	}
 
 	protected static void disconnectClient(ServerThread client, Room room) {
