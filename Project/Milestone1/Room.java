@@ -3,6 +3,7 @@ package Project.Milestone1;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Random;
 
 public class Room implements AutoCloseable{
 	protected static Server server;// used to refer to accessible server functions
@@ -16,6 +17,8 @@ public class Room implements AutoCloseable{
 	private final static String DISCONNECT = "disconnect";
 	private final static String LOGOUT = "logout";
 	private final static String LOGOFF = "logoff";
+	private final static String FLIP = "flip";
+	private final static String ROLL = "roll";
 
 	public Room(String name) {
 		this.name = name;
@@ -109,6 +112,14 @@ public class Room implements AutoCloseable{
 						roomName = comm2[1];
 						Room.joinRoom(roomName, client);
 						break;
+					case FLIP:
+						String coinFilp = Room.flip();
+						sendMessage(client, coinFilp);
+						break;
+					case ROLL:
+						String number = Room.roll();
+						sendMessage(client, number);
+						break;
 					case DISCONNECT:
 					case LOGOUT:
 					case LOGOFF:
@@ -118,8 +129,39 @@ public class Room implements AutoCloseable{
 						wasCommand = false;
 						break;
 				}
-
-			}
+			} else {
+				//bold
+				if (message.matches("(.*)#(.+)#(.*)")) {
+					String[] plainText1 = message.split("#");
+					String text1 = "<b>" + plainText1[1] + "</b>";
+					sendMessage(client, text1);
+				}
+				//italics
+				if (message.matches("(.*)_(.+)_(.*)")) {
+					String[] plainText2 = message.split("_");
+					String text2 = "<i>" + plainText2[1] + "</i>";
+					sendMessage(client, text2);
+				}
+				//bold & italics (**_ _**)
+				if (message.matches("(.*)**_(.+)_**(.*)")) {
+					String[] plainText3 = message.split("**_");
+					String[] newText3 = plainText3[1].split("_**");
+					String text = "<b><i>" + newText3[0] + "</i></b>";
+					sendMessage(client, text);
+				}
+				//underline
+				if (message.matches("(.*)~(.+)~(.*)")) {
+					String[] plainText4 = message.split("~");
+					String text4 = "<u>" + plainText4[1] + "<u>";
+					sendMessage(client, text4);
+				}
+				//color
+				if (message.matches("(.*)#r(.+)#r(.*)"));
+					String[] plainText5 = message.split("#r");
+					String[] newText5 = plainText5[1].split("r#");
+					String text = "<color>" + newText5[0] + "</color>";
+					sendMessage(client, text);
+				}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -140,6 +182,30 @@ public class Room implements AutoCloseable{
 		if (!server.joinRoom(roomName, client)) {
 			client.sendMessage("Server", String.format("Room %s doesn't exist", roomName));
 		}
+	}
+
+	public static String flip() {
+		Random rand = new Random();
+		String sideUp;
+		int sideup = rand.nextInt(2);
+		if (sideup == 0) {
+			sideUp = "heads";
+		} else {
+			sideUp = "tails";
+		}
+
+		return sideUp;
+	}
+
+	public static String roll() {
+		Random rand = new Random();
+		int random = rand.nextInt(10) + 1;
+		for (int i = 0; i < 10; i++) {
+			System.out.println(random);
+		}
+		String number = " " + random;
+		
+		return number;
 	}
 
 	protected static void disconnectClient(ServerThread client, Room room) {
