@@ -140,35 +140,35 @@ public class Room implements AutoCloseable{
 				//matching opening and closing tags, it will first split by the first tag and put it into a list containing two strings. then I will get the string at index 1 (should be text after the first tag)
 				//Then i will split it again by the closing tag, and then I will take the index of 0 (should be the text before the closing tag), and then append the html characters to the desired text.
 				if (message.matches("(.*)#(.+)#(.*)")) {
-					String[] plainText = message.split("#");
-					String text = "<b>" + plainText[1] + "</b>";
-					sendMessage(client, text);
+					String[] plainText1 = message.split("#");
+					String text1 = "<b>" + plainText1[1] + "</b>";
+					sendMessage(client, text1);
 				}
 				//italics (_)
 				if (message.matches("(.*)_(.+)_(.*)")) {
-				String[] plainText = message.split("_");
-				String text = "<i>" + plainText[1] + "</i>";
-				sendMessage(client, text);
+				String[] plainText2 = message.split("_");
+				String text2 = "<i>" + plainText2[1] + "</i>";
+				sendMessage(client, text2);
 				}
 				//bold & italics (**_ _**)
 				if (message.matches("(.*)**_(.+)_**(.*)")) {
-					String[] plainText = message.split("**_");
-					String[] newText = plainText[1].split("_**");
-					String text = "<b><i>" + newText[0] + "</i></b>";
-					sendMessage(client, text);
+					String[] plainText3 = message.split("**_");
+					String[] newText3 = plainText3[1].split("_**");
+					String text3 = "<b><i>" + newText3[0] + "</i></b>";
+					sendMessage(client, text3);
 				}
 				//underline (~)
 				if (message.matches("(.*)~(.+)~(.*)")) {
-					String[] plainText = message.split("~");
-					String text = "<u>" + plainText[1] + "<u>";
-					sendMessage(client, text);
+					String[] plainText4 = message.split("~");
+					String text4 = "<u>" + plainText4[1] + "<u>";
+					sendMessage(client, text4);
 				}
 				//color (#r)
 				if (message.matches("(.*)#r(.+)#r(.*)")) {
-					String[] plainText = message.split("#r");
-					String[] newText = plainText[1].split("r#");
-					String text = "<color>" + newText[1] + "</color>";
-					sendMessage(client, text);
+					String[] plainText5 = message.split("#r");
+					String[] newText5 = plainText5[1].split("r#");
+					String text5 = "<color>" + newText5[1] + "</color>";
+					sendMessage(client, text5);
 				}
 			}
 		} catch (Exception e) {
