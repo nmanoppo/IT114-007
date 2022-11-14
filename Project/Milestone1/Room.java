@@ -1,11 +1,9 @@
-package Project;
+package Project.Milestone1;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
-
-import java.util.*;
 
 public class Room implements AutoCloseable{
 	protected static Server server;// used to refer to accessible server functions
@@ -115,8 +113,8 @@ public class Room implements AutoCloseable{
 						Room.joinRoom(roomName, client);
 						break;
 					case FLIP:
-						String coinFlip = Room.flip();
-						sendMessage(client, coinFlip);
+						String coinFilp = Room.flip();
+						sendMessage(client, coinFilp);
 						break;
 					case ROLL:
 						String number = Room.roll();
@@ -131,33 +129,23 @@ public class Room implements AutoCloseable{
 						wasCommand = false;
 						break;
 				}
-        
 			} else {
-				//bold (#)
-				//I used regex to read through a message user sends and determine if it contains the indicators of bold and/or italics, underline, or color. If true it will enter the if statement, and it will split
-				//the text by the indicator [bold(#), italics(_), bold & italics (**_ _**), underline (~), color (#r)], and if the sentence has matching tags at the beginning and end, it will replace the tags with html characters
-				// such as [<b></b> for bold, <i></i> for italics, <b><i></i></b> for bold & italics, <u></u> for underline, <color></color>] and it will send the revised text back to the client. However, if it does not have
-				//matching opening and closing tags, it will first split by the first tag and put it into a list containing two strings. then I will get the string at index 1 (should be text after the first tag)
-				//Then i will split it again by the closing tag, and then I will take the index of 0 (should be the text before the closing tag), and then append the html characters to the desired text.
+				//bold
 				if (message.matches("(.*)#(.+)#(.*)")) {
 					String[] plainText1 = message.split("#");
 					String text1 = "<b>" + plainText1[1] + "</b>";
 					sendMessage(client, text1);
 				}
-				//italics (_)
+				//italics
 				if (message.matches("(.*)_(.+)_(.*)")) {
-				String[] plainText2 = message.split("_");
-				String text2 = "<i>" + plainText2[1] + "</i>";
-				sendMessage(client, text2);
+					String[] plainText2 = message.split("_");
+					String text2 = "<i>" + plainText2[1] + "</i>";
+					sendMessage(client, text2);
 				}
 				//bold & italics (**_ _**)
 				if (message.matches("(.*)**_(.+)_**(.*)")) {
 					String[] plainText3 = message.split("**_");
 					String[] newText3 = plainText3[1].split("_**");
-					String text3 = "<b><i>" + newText3[0] + "</i></b>";
-					sendMessage(client, text3);
-				}
-				//underline (~)
 					String text = "<b><i>" + newText3[0] + "</i></b>";
 					sendMessage(client, text);
 				}
@@ -167,14 +155,13 @@ public class Room implements AutoCloseable{
 					String text4 = "<u>" + plainText4[1] + "<u>";
 					sendMessage(client, text4);
 				}
-				//color (#r)
-				if (message.matches("(.*)#r(.+)#r(.*)")) {
+				//color
+				if (message.matches("(.*)#r(.+)#r(.*)"));
 					String[] plainText5 = message.split("#r");
 					String[] newText5 = plainText5[1].split("r#");
-					String text5 = "<color>" + newText5[0] + "</color>";
-					sendMessage(client, text5);
+					String text = "<color>" + newText5[0] + "</color>";
+					sendMessage(client, text);
 				}
-			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -206,6 +193,7 @@ public class Room implements AutoCloseable{
 		} else {
 			sideUp = "tails";
 		}
+
 		return sideUp;
 	}
 
@@ -216,6 +204,7 @@ public class Room implements AutoCloseable{
 			System.out.println(random);
 		}
 		String number = " " + random;
+		
 		return number;
 	}
 
