@@ -20,6 +20,7 @@ public class Room implements AutoCloseable{
 	private final static String LOGOFF = "logoff";
 	private final static String FLIP = "flip";
 	private final static String ROLL = "roll";
+	private final static String TEXT_TRIGGER = "!";
 
 
 	public Room(String name) {
@@ -114,11 +115,11 @@ public class Room implements AutoCloseable{
 						roomName = comm2[1];
 						Room.joinRoom(roomName, client);
 						break;
-					case FLIP:
+					case FLIP: //Nadia Manoppo, nm94
 						String coinFlip = Room.flip();
 						sendMessage(client, coinFlip);
 						break;
-					case ROLL:
+					case ROLL: //Nadia Manoppo, nm94
 						String number = Room.roll();
 						sendMessage(client, number);
 						break;
@@ -131,44 +132,52 @@ public class Room implements AutoCloseable{
 						wasCommand = false;
 						break;
 				}
-
-			} else {
-				//bold (#)
-				//I used regex to read through a message user sends and determine if it contains the indicators of bold and/or italics, underline, or color. If true it will enter the if statement, and it will split
-				//the text by the indicator [bold(#), italics(_), bold & italics (**_ _**), underline (~), color (#r)], and if the sentence has matching tags at the beginning and end, it will replace the tags with html characters
-				// such as [<b></b> for bold, <i></i> for italics, <b><i></i></b> for bold & italics, <u></u> for underline, <color></color>] and it will send the revised text back to the client. However, if it does not have
-				//matching opening and closing tags, it will first split by the first tag and put it into a list containing two strings. then I will get the string at index 1 (should be text after the first tag)
-				//Then i will split it again by the closing tag, and then I will take the index of 0 (should be the text before the closing tag), and then append the html characters to the desired text.
+			
+			} else if (message.startsWith(TEXT_TRIGGER)) { //text trigger is '!', NADIA MANOPPO, nm94
+				String tags1 = "**";
+				String tags2 = "<b>r";
+				String tags3 = "<b>b";
+				String tags4 = "<b>g";
+				String tags5 = "<b>y";
 				if (message.matches("(.*)#(.+)#(.*)")) {
-					String[] plainText1 = message.split("#");
-					String text1 = "<b>" + plainText1[1] + "</b>";
-					sendMessage(client, text1);
+					message = message.replace("#", "</b>");
+					message = message.replaceFirst("</b>", "<b>");
+					sendMessage(client, message);
 				}
-				//italics (_)
 				if (message.matches("(.*)_(.+)_(.*)")) {
-				String[] plainText2 = message.split("_");
-				String text2 = "<i>" + plainText2[1] + "</i>";
-				sendMessage(client, text2);
-				}
-				//bold & italics (**_ _**)
-				if (message.matches("(.*)**_(.+)_**(.*)")) {
-					String[] plainText3 = message.split("**_");
-					String[] newText3 = plainText3[1].split("_**");
-					String text3 = "<b><i>" + newText3[0] + "</i></b>";
-					sendMessage(client, text3);
-				}
-				//underline (~)
+					message = message.replace("_", "</i>");
+					message = message.replaceFirst("</i>", "<i>");
+					sendMessage(client, message);
+				} 
+				if (message.contains(tags1)) {
+					message = message.replace("**", "<b>");
+					message = message.replaceFirst("<b>", "</b>");
+					sendMessage(client, message);
+				} 
 				if (message.matches("(.*)~(.+)~(.*)")) {
-					String[] plainText4 = message.split("~");
-					String text4 = "<u>" + plainText4[1] + "<u>";
-					sendMessage(client, text4);
-				}
-				//color (#r)
-				if (message.matches("(.*)#r(.+)#r(.*)")) {
-					String[] plainText5 = message.split("#r");
-					String[] newText5 = plainText5[1].split("r#");
-					String text5 = "<color>" + newText5[1] + "</color>";
-					sendMessage(client, text5);
+					message = message.replace("~", "</u>");
+					message = message.replaceFirst("</u>", "<u>");
+					sendMessage(client, message);
+				} 
+				if (message.contains(tags2)) {
+					message = message.replace("<b>r", "<color=red>");
+					message = message.replaceFirst("</b>r", "</color=red>");
+					sendMessage(client, message);
+				} 
+				if (message.matches(tags3)) {
+					message = message.replace("<b>b", "<color=blue>");
+					message = message.replaceFirst("</b>r", "</color=blue>");
+					sendMessage(client, message);
+				} 
+				if (message.matches(tags4)) {
+					message = message.replace("<b>g", "<color=green>");
+					message = message.replaceFirst("</b>g", "</color=green>");
+					sendMessage(client, message);
+				} 
+				if (message.matches(tags5)) {
+					message = message.replace("<b>y", "<color=yellow>");
+					message = message.replaceFirst("</b>y", "</color=yellow>");
+					sendMessage(client, message);
 				}
 			}
 		} catch (Exception e) {
@@ -193,25 +202,22 @@ public class Room implements AutoCloseable{
 		}
 	}
 
-	public static String flip() {
+	public static String flip() { //Nadia Manoppo, nm94
 		Random rand = new Random();
 		String sideUp;
 		int sideup = rand.nextInt(2);
 		if (sideup == 0) {
-			sideUp = "heads";
+			sideUp = "Flipped a coin and got HEADS";
 		} else {
-			sideUp = "tails";
+			sideUp = "Flipped a coin and got TAILS";
 		}
 		return sideUp;
 	}
 
-	public static String roll() {
+	public static String roll() { //Nadia Manoppo, nm94
 		Random rand = new Random();
 		int random = rand.nextInt(10) + 1;
-		for (int i = 0; i < 10; i++) {
-			System.out.println(random);
-		}
-		String number = " " + random;
+		String number = "I rolled a number between 1-10, and got: " + random;
 		return number;
 	}
 
