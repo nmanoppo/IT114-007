@@ -7,12 +7,7 @@ import java.net.Socket;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.BufferedReader;
-import java.io.FileReader;
 /*
 import Project.Payload;
 import Project.PayloadType;
@@ -35,10 +30,10 @@ public class ServerThread extends Thread {
     public List<String> mutedList = new ArrayList<String>();
 
 
-	// Mute list here
+	
     public boolean isMuted(String client) {
-    	clientName = clientName.trim().toLowerCase(); // case-insensitive
-    	return mutedList.contains(client); //easier way of finding it and easier on eyes
+    	clientName = clientName.trim().toLowerCase(); 
+    	return mutedList.contains(client); 
     }
     
     public void mute(String username) {
@@ -55,48 +50,6 @@ public class ServerThread extends Thread {
     	}
     }
     
-    void save() {
-    	String data = clientName + ":" + String.join(",",  mutedList);
-    	try {
-    		File file = new File("mutedList.txt");
-    		if(file.createNewFile()) {
-    			System.out.println("Saved the mute list.");
-    		}
-    		else {
-    			System.out.println("Something has occurred.");
-    		}
-    	}
-    	catch (Exception e) {
-    		System.err.println(e);
-    	}
-    	System.out.println(data);
-    	try {
-    		FileWriter filewrite = new FileWriter("mutedList.txt");
-    		filewrite.write(mutedList.toString());
-    		filewrite.close();
-    	}
-		catch(IOException e) {
-			e.printStackTrace();
-		}
-
-    }
-
-    void load() {
-    	try {
-    		BufferedReader br = new BufferedReader(new FileReader("mutedList.txt"));
-    		StringBuilder sb = new StringBuilder();
-    		String text = br.readLine();
-    		while (text != null) {
-    			sb.append(text);
-    			text = br.readLine();
-    		}
-    		
-    		mutedList = Arrays.asList(sb.toString().split(","));
-            br.close();
-    	}catch(IOException e) {
-    		e.printStackTrace();
-    	}
-    	    }
     
 
     public String getUsername()

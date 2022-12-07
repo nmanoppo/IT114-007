@@ -118,24 +118,24 @@ public class Room implements AutoCloseable{
 						roomName = comm2[1];
 						Room.joinRoom(roomName, client);
 						break;
-					case FLIP:
+					case FLIP: //nadia manoppo, nm94
 						String coinFlip = Room.flip();
 						String username1 = client.getClientName();
-						sendMessage(client, username1 + " Flipped a coin and got: " + coinFlip);
+						sendMessage(client, username1 + " <b>flipped a coin and got: </b>" + coinFlip);
 						break;
-					case ROLL:
+					case ROLL://nadia manoppo, nm94
 						String number = Room.roll();
 						String username = client.getClientName();
-						sendMessage(client, username + " Rolled a dice and got: " + number);
+						sendMessage(client, username + " <b>rolled a dice and got: </b>" + number);
 						break;
-					case MUTE:
+					case MUTE: //nadia manoppo, nm94
 						String[] UserName = message.split(" ");
 						String userToBeMuted = UserName[1];
 						client.mutedList.add(userToBeMuted);
 						client.mute(userToBeMuted);
 						sendMessage(client, userToBeMuted + " Has been muted!");
 						break;
-					case UNMUTE:
+					case UNMUTE: //nadia manoppo, nm94
 						String[] UserName1 = message.split(" ");
 						String userToBeUnmuted = UserName1[1];
 						for (String name : client.mutedList) {
@@ -155,7 +155,7 @@ public class Room implements AutoCloseable{
 						wasCommand = false;
 						break;
 				}
-			} else if (message.startsWith(COMMAND_TRIGGER2)) {
+			} else if (message.startsWith(COMMAND_TRIGGER2)) { //Nadia Manoppo, nm94
 				String[] comm = message.split(COMMAND_TRIGGER2);
 				String part2 = comm[1];
 				String[] comm1 = part2.split(" ");
@@ -206,7 +206,7 @@ public class Room implements AutoCloseable{
 		}
 	}
 
-	public static String flip() {
+	public static String flip() { //nadia manoppo, nm94
 		Random rand = new Random();
 		String sideUp;
 		int sideup = rand.nextInt(2);
@@ -218,7 +218,7 @@ public class Room implements AutoCloseable{
 		return sideUp;
 	}
 
-	public static String roll() {
+	public static String roll() { //nadia manoppo, nm94
 		Random rand = new Random();
 		int random = rand.nextInt(10) + 1;
 		for (int i = 0; i < 10; i++) {

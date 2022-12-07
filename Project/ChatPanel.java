@@ -50,7 +50,7 @@ public class ChatPanel extends JPanel {
         wrapper.add(scroll);
         this.add(wrapper, BorderLayout.CENTER);
 
-        JPanel input = new JPanel();
+        JPanel input = new JPanel(); //Nadia Manoppo, nm94
         input.setLayout(new BoxLayout(input, BoxLayout.X_AXIS));
         JTextField textValue = new JTextField();
         input.add(textValue);
