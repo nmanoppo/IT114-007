@@ -197,7 +197,7 @@ public class ClientUI extends JFrame implements IClientEvents, ICardControl {
     public void onClientConnect(long clientId, String clientName, String message) {
         if (currentCard.ordinal() >= Card.CHAT.ordinal()) {
             processClientConnectionStatus(clientId, clientName, true);
-            chatPanel.addText(String.format("*%s %s*", clientName, message));
+            chatPanel.addText(String.format("*<b>%s:</b> %s", clientName, message));
         }
     }
 
@@ -205,7 +205,7 @@ public class ClientUI extends JFrame implements IClientEvents, ICardControl {
     public void onClientDisconnect(long clientId, String clientName, String message) {
         if (currentCard.ordinal() >= Card.CHAT.ordinal()) {
             processClientConnectionStatus(clientId, clientName, false);
-            chatPanel.addText(String.format("*%s %s*", clientName, message));
+            chatPanel.addText(String.format("<i>%s:</i> %s", clientName, message));
         }
     }
 
@@ -213,7 +213,7 @@ public class ClientUI extends JFrame implements IClientEvents, ICardControl {
     public void onMessageReceive(long clientId, String message) {
         if (currentCard.ordinal() >= Card.CHAT.ordinal()) {
             String clientName = mapClientId(clientId);
-            chatPanel.addText(String.format("%s: %s", clientName, message));
+            chatPanel.addText(String.format("<i>%s:</i> %s", clientName, message));
         }
     }
 

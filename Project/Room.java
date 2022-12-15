@@ -128,24 +128,38 @@ public class Room implements AutoCloseable{
 						String username = client.getClientName();
 						sendMessage(client, username + " <b>rolled a dice and got: </b>" + number);
 						break;
-					case MUTE: //nadia manoppo, nm94
-						String[] UserName = message.split(" ");
-						String userToBeMuted = UserName[1];
-						client.mutedList.add(userToBeMuted);
-						client.mute(userToBeMuted);
-						sendMessage(client, userToBeMuted + " Has been muted!");
-						break;
-					case UNMUTE: //nadia manoppo, nm94
-						String[] UserName1 = message.split(" ");
-						String userToBeUnmuted = UserName1[1];
-						for (String name : client.mutedList) {
-							if(name.equals(userToBeUnmuted)) {
-								client.mutedList.remove(userToBeUnmuted);
-								client.unmute(userToBeUnmuted);
-								sendMessage(client, "You have unmuted " + userToBeUnmuted + "!");
-								break;
+					case MUTE: 
+						String[] muted = comm2[1].split(" ");
+						String mutedName = comm2[1];
+						List<String> muteList = new ArrayList<String>();
+						sendMessage(client, " muted " + mutedName);
+						// can mute multiple clients separated by comma
+						for (String user : muted) {
+							if (!client.isMuted(user)) {
+								client.mute(user);
+								muteList.add(user);
 							}
 						}
+						//sendPrivateMessage(client, " muted you", muteList);
+						wasCommand = true;
+						break;
+					case UNMUTE:
+						String[] unmuted = comm2[1].split(" ");
+						String unmutedName = client.getClientName();
+						List<String> unmuteList = new ArrayList<String>();
+						sendMessage(client, " unmuted " + unmutedName);
+						// can unmute multiple clients separated by comma
+						for (String user : unmuted) {
+							if (client.isMuted(user)) {
+								client.unmute(user);
+								unmuteList.add(user);
+							}
+						}
+						sendPrivateMessage(client, " unmuted you", unmuteList);
+						
+						wasCommand = true;
+						break;
+						
 					case DISCONNECT:
 					case LOGOUT:
 					case LOGOFF:
@@ -258,13 +272,37 @@ public class Room implements AutoCloseable{
 			Iterator<ServerThread> iter = clients.iterator();
 			while (iter.hasNext()) {
 				ServerThread client = iter.next();
+				if (!client.isMuted(sender.getClientName())) {
 				boolean messageSent = client.sendMessage(from, message);
 				if (!messageSent) {
 					handleDisconnect(iter, client);
+					iter.remove();
 				}
 			}
 		}
 	}
+}
+
+protected void sendPrivateMessage(ServerThread sender, String message, List<String> users) {
+	logger.log(Level.INFO, getName() + ": Sending message to " + users.size() + " clients");
+	if (processCommands(message, sender)) {
+	    // it was a command, don't broadcast
+	    return;
+	}
+	Iterator<ServerThread> iter = clients.iterator();
+	while (iter.hasNext()) {
+	    ServerThread client = iter.next();
+	    	// send message if sender not muted
+	    if(users.contains(client.getClientName().toLowerCase())) {
+	    	if (!client.isMuted(sender.getClientName())){
+	    		boolean messageSent = client.send(sender.getClientName(), message);
+			    if (!messageSent) {
+			    	iter.remove();
+			    }
+	    	}
+	    }
+	}
+    }
 
 	protected synchronized void sendUserListToClient(ServerThread receiver) {
 		logger.log(Level.INFO, String.format("Room[%s] Syncing client list of %s to %s", getName(), clients.size(),

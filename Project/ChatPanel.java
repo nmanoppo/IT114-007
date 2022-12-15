@@ -9,7 +9,10 @@ import java.awt.event.ContainerEvent;
 import java.awt.event.ContainerListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -28,7 +31,6 @@ import Project.Client;
 import Project.GeneralUtils;
 import Project.ICardControl;
  */
-
 public class ChatPanel extends JPanel {
     private static Logger logger = Logger.getLogger(ChatPanel.class.getName());
     private JPanel chatArea = null;
@@ -56,6 +58,75 @@ public class ChatPanel extends JPanel {
         input.add(textValue);
         JButton button = new JButton("Send");
         // lets us submit with the enter key instead of just the button click
+
+        JPanel exportBox = new JPanel();
+        exportBox.setLayout(new BoxLayout(exportBox, BoxLayout.X_AXIS));
+        JButton exportButton = new JButton("Export");
+        input.add(exportButton);
+
+        
+        exportButton.addActionListener((export) ->
+        {
+            try
+            {
+                File chathistory = new File("chathistory.txt");
+                String history = textValue.getText().trim();
+                Client.INSTANCE.sendMessage(history);
+                PrintWriter out = new PrintWriter(new FileWriter("chathistory.txt", true));
+                out.println(history);
+                out.close();
+
+                //PrintWriter PW = new PrintWriter(file);
+                if (chathistory.createNewFile())
+                {
+                    System.out.println("File created: " + chathistory.getName());
+                }
+                else
+                {
+                    System.out.println("The File already exists.");
+                }
+            }
+            catch (IOException e)
+            {
+                System.out.println("Error Occurred.");
+                e.printStackTrace();
+            }
+        }
+        );
+
+        JPanel mutedBox = new JPanel();
+        mutedBox.setLayout(new BoxLayout(mutedBox, BoxLayout.X_AXIS));
+        JButton mutedButton = new JButton("Muted");
+        input.add(mutedButton);
+
+        mutedButton.addActionListener((muted) ->
+        {
+            try
+            {
+                File mutedList = new File("mutedlist.txt");
+                String mutedC = textValue.getText().trim();
+                Client.INSTANCE.sendMessage(mutedC);
+                PrintWriter out = new PrintWriter(new FileWriter("mutedlist.txt", true));
+                out.println(mutedC);
+                out.close();
+
+                if (mutedList.createNewFile())
+                {
+                    System.out.println("File created: " + mutedList.getName());
+                }
+                else
+                {
+                    System.out.println("The File already exists.");
+                }
+            }
+            catch (IOException e)
+            {
+                System.out.println("Error Occurred.");
+                e.printStackTrace();
+            }
+        }
+    );
+
         textValue.addKeyListener(new KeyListener() {
 
             @Override

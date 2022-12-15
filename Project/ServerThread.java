@@ -30,7 +30,26 @@ public class ServerThread extends Thread {
     public List<String> mutedList = new ArrayList<String>();
 
 
-	
+	protected boolean send(String clientName, String message) {
+        Payload payload = new Payload();
+        payload.setPayloadType(PayloadType.MESSAGE);
+        payload.setClientName(clientName);
+        payload.setMessage(message);
+   
+        return sendPayload(payload);
+    }
+    private boolean sendPayload(Payload p) {
+        try {
+            out.writeObject(p);
+            return true;
+        }
+        catch (IOException e) {
+            logger.log(Level.INFO, "Error sending message to client (most likely disconnected)");
+            e.printStackTrace();
+            cleanup();
+            return false;
+        }
+       }
     public boolean isMuted(String client) {
     	clientName = clientName.trim().toLowerCase(); 
     	return mutedList.contains(client); 
@@ -49,7 +68,6 @@ public class ServerThread extends Thread {
     		mutedList.remove(username);
     	}
     }
-    
     
 
     public String getUsername()
