@@ -1,18 +1,24 @@
 package Project;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 /*
 import Project.Payload;
 import Project.PayloadType;
 import Project.RoomResultPayload;
  */
+import java.util.Scanner;
 
 /**
  * A server-side representation of a single client
@@ -29,6 +35,9 @@ public class ServerThread extends Thread {
     private long myId;
     public List<String> mutedList = new ArrayList<String>();
 
+    public List<String> getMutedClients() {
+        return this.mutedList;
+    }
 
 	protected boolean send(String clientName, String message) {
         Payload payload = new Payload();
@@ -38,6 +47,7 @@ public class ServerThread extends Thread {
    
         return sendPayload(payload);
     }
+
     private boolean sendPayload(Payload p) {
         try {
             out.writeObject(p);
@@ -49,7 +59,8 @@ public class ServerThread extends Thread {
             cleanup();
             return false;
         }
-       }
+    }
+
     public boolean isMuted(String client) {
     	clientName = clientName.trim().toLowerCase(); 
     	return mutedList.contains(client); 
@@ -59,6 +70,7 @@ public class ServerThread extends Thread {
     	username = username.trim().toLowerCase();
     	if (!isMuted(username)) {
     		mutedList.add(username);
+            saveMutedList();
     	}
     }
     
@@ -66,9 +78,60 @@ public class ServerThread extends Thread {
     	username = username.trim().toLowerCase();
     	if (isMuted(username)) {
     		mutedList.remove(username);
+            saveMutedList();
     	}
     }
     
+    public void saveMutedList() {
+        String info = clientName + ": " + String.join(", ", mutedList);
+        try
+            {
+                File mutedList = new File("mutedlist.txt");
+                PrintWriter out = new PrintWriter(new FileWriter("mutedlist.txt", true));
+                out.write(info);
+                out.close();
+
+                if (mutedList.createNewFile())
+                {
+                    System.out.println("File created: " + mutedList.getName());
+                }
+                else
+                {
+                    System.out.println("The File already exists.");
+                }
+            }
+            catch (IOException e)
+            {
+                System.out.println("Error Occurred.");
+                e.printStackTrace();
+            }
+        }
+        public void loadMuteList() {
+	   	 File file = new File(clientName + ".txt");
+	   	 if (file.exists()) {
+		   	 try (Scanner reader = new Scanner(file)) {
+		   		String dataFromFile = "";
+		   		while (reader.hasNextLine()) {
+			   		 String text = reader.nextLine();
+			   		 dataFromFile += text;
+		   		}
+		   		dataFromFile = dataFromFile.substring(dataFromFile.indexOf(" ")+1);;
+		   		if (!dataFromFile.strip().equals("") && !dataFromFile.isEmpty()) {
+		   			List<String> getClients = Arrays.asList(dataFromFile.split(", "));
+		   	    	for (String client : getClients) {
+		   	    	    mute(client);
+		   	    	    System.out.println("sync");
+		   	    	}
+		   		}
+		   	 }
+		   	catch (FileNotFoundException e) {
+				e.printStackTrace();
+			} catch (Exception e2) {
+				e2.printStackTrace();
+			}
+	   	 }
+	   	 System.out.println("file doesn't exist");
+    }
 
     public String getUsername()
     {
