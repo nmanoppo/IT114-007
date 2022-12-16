@@ -128,27 +128,24 @@ public class Room implements AutoCloseable{
 						String username = client.getClientName();
 						sendMessage(client, username + " <b>rolled a dice and got: </b>" + number);
 						break;
-					case MUTE: 
+					case MUTE: //nm94 Nadia Manoppo
 						String[] muted = comm2[1].split(" ");
 						String mutedName = comm2[1];
 						List<String> muteList = new ArrayList<String>();
 						sendMessage(client, " muted " + mutedName);
-						// can mute multiple clients separated by comma
 						for (String user : muted) {
 							if (!client.isMuted(user)) {
 								client.mute(user);
 								muteList.add(user);
 							}
 						}
-						//sendPrivateMessage(client, " muted you", muteList);
 						wasCommand = true;
 						break;
-					case UNMUTE:
+					case UNMUTE: //nm94 Nadia Manoppo
 						String[] unmuted = comm2[1].split(" ");
 						String unmutedName = client.getClientName();
 						List<String> unmuteList = new ArrayList<String>();
 						sendMessage(client, " unmuted " + unmutedName);
-						// can unmute multiple clients separated by comma
 						for (String user : unmuted) {
 							if (client.isMuted(user)) {
 								client.unmute(user);
